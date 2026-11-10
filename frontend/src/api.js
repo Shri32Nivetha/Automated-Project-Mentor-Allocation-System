@@ -1,4 +1,4 @@
-const BASE = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api/v1").replace(/\/$/, "");
+const BASE = (import.meta.env.VITE_API_URL || "/api/v1").replace(/\/$/, "");
 const TOKEN_KEY = "pga_token";
 
 export const getToken = () => sessionStorage.getItem(TOKEN_KEY);
@@ -21,7 +21,7 @@ function toMessage(detail, status) {
 }
 
 async function raw(path, { method = "GET", body, params } = {}) {
-  const url = new URL(BASE + path);
+  const url = new URL(BASE + path, window.location.origin);
   Object.entries(params || {}).forEach(([k, v]) => v !== undefined && v !== null && v !== "" && url.searchParams.set(k, v));
   const headers = {};
   const t = getToken();
