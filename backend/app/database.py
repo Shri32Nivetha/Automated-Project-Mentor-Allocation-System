@@ -10,11 +10,15 @@ _s = get_settings()
 # MySQL is the only supported database: there is deliberately no SQLite fallback.
 engine = create_engine(
     _s.database_url,
+    connect_args={
+        "ssl": {
+            "check_hostname": True,
+        }
+    },
     pool_size=_s.db_pool_size,
     max_overflow=_s.db_max_overflow,
-    pool_recycle=_s.db_pool_recycle,
+    pool_recycle=300,
     pool_pre_ping=True,
-    # READ COMMITTED + row locks (SELECT ... FOR UPDATE) give predictable behaviour for concurrent admins.
     isolation_level="READ COMMITTED",
 )
 SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
